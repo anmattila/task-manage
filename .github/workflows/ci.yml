@@ -1,0 +1,40 @@
+name: CI-workflow
+on: 
+  push: 
+    branches: [main]
+  pull_request: 
+    branches: [main]
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm run install:all
+
+      # variables copy for now, secrets later on security
+      - name: Copy environment variables for backend
+        run: cp .env.example .env
+        working-directory: ./backend
+      - name: Copy environment variables for frontend
+        run: cp .env.example .env
+        working-directory: ./frontend
+        
+      - name: Lint backend
+        run: npm run lint:backend
+      - name: Lint frontend
+        run: npm run lint:frontend
+      
+      - name: Test backend
+        run: npm run test:backend
+      - name: Test frontend
+        run: nmp run test:frontend
+
+      - name: Build backend
+        run: npm run build:backend
+      - name: Build frontend
+        run: npm run build:frontend
