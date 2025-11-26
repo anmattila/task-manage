@@ -32,7 +32,7 @@ jobs:
       - name: Test backend
         run: npm run test:backend
       - name: Test frontend
-        run: nmp run test:frontend
+        run: npm run test:frontend
 
       - name: Build backend
         run: npm run build:backend
