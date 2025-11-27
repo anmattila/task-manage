@@ -7,6 +7,7 @@ on:
 
 jobs: 
   build:
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -29,6 +30,13 @@ jobs:
       - name: Lint frontend
         run: npm run lint:frontend
       
+      - name: Audit backend high risk
+        run: npm audit --audit-level=high
+        working-directory: ./backend
+      - name: Audit frontend high risk
+        run: npm audit --audit-level=high
+        working-directory: ./frontend
+
       - name: Test backend
         run: npm run test:backend
       - name: Test frontend
@@ -38,3 +46,29 @@ jobs:
         run: npm run build:backend
       - name: Build frontend
         run: npm run build:frontend
+
+  analyze: 
+    name: CodeQL analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript-typescript']
+        build-mode: [none]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with: 
+          languages: ${{matrix.language}}
+          build-mode: ${{matrix.build-mode}}
+      - name: Perform analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
