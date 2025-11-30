@@ -75,6 +75,7 @@ jobs:
 
   docker:
     name: Build images with Docker Compose
+    needs: [build, analyze]
     runs-on: ubuntu-latest
     env:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}

@@ -1,0 +1,20 @@
+name: Render Deployment
+on: 
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+
+jobs:
+  Render-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Render deployment with tag
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOYMENT_HOOK }}
+        run: 
+          echo "Deployment at Render.com"
+          curl "$deployment_url"
