@@ -1,7 +1,6 @@
 name: Render Deployment
 on: 
   push:
-    branches: [main]
     tags: ['v*.*.*']
 
 jobs:
@@ -11,9 +10,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Render deployment with tag
+      - name: Render backend deployment
         env:
-          deploy_url: ${{ secrets.RENDER_DEPLOYMENT_HOOK }}
+          deploy_url: ${{ secrets.RENDER_DEPLOY_BACKEND_URL }}
         run: 
-          echo "Deployment at Render.com"
           curl "$deploy_url"
+
+      - name: Render frontend deployment
+        env: 
+          deploy_url: ${{ secrets.RENDER_DEPLOY_FRONTEND_URL }}
+        run: 
+          curl "$deploy_url"
+
