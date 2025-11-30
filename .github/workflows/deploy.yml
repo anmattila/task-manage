@@ -12,11 +12,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Render deployment with tag
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOYMENT_HOOK }}
         run: 
           echo "Deployment at Render.com"
-          curl "$deployment_url"
-
-# this is for health check
+          curl "$deploy_url"
