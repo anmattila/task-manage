@@ -72,3 +72,27 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{matrix.language}}"
+
+  docker:
+    name: Build images with Docker Compose
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build docker images
+        run: |
+          docker compose build
+          sleep 30
+      - name: Start for test
+        run: |
+          docker compose up -d
+          sleep 30
+        # could use smoke test or health check everything is running
+      - name: Stop containers
+        run: docker compose down
